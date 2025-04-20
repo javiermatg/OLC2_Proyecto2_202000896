@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "c0oOyn0k4Rw=",
+  "success": true,
+  "projectFilePath": "/home/snier/Documents/LabCompi2/compi2Damian/TestEnsamblador/Proyecto1/api/api.csproj",
+  "expectedPackageFiles": [
+    "/home/snier/.nuget/packages/antlr4.runtime.standard/4.13.1/antlr4.runtime.standard.4.13.1.nupkg.sha512",
+    "/home/snier/.nuget/packages/microsoft.aspnetcore.openapi/9.0.1/microsoft.aspnetcore.openapi.9.0.1.nupkg.sha512",
+    "/home/snier/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
