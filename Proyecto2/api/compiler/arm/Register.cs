@@ -38,9 +38,40 @@ public static class Register{
     public static string XZR => "xzr";
     public static string LR => "x30";
 
-    
-    public static string V0 => "v0";
-    public static string V1 => "v1";
+    // Registers Double
+    public static string D0 => "d0";
+    public static string D1 => "d1";
+    public static string D2 => "d2";
+    public static string D3 => "d3";
+    public static string D4 => "d4";
+    public static string D5 => "d5";
+    public static string D6 => "d6";
+    public static string D7 => "d7";
+    public static string D8 => "d8";
+    public static string D9 => "d9";
+    public static string D10 => "d10";
+    public static string D11 => "d11";
+    public static string D12 => "d12";
+    public static string D13 => "d13";
+    public static string D14 => "d14";
+    public static string D15 => "d15";  
+    public static string D16 => "d16";
+    public static string D17 => "d17";
+    public static string D18 => "d18";
+    public static string D19 => "d19";
+    public static string D20 => "d20";
+    public static string D21 => "d21";
+    public static string D22 => "d22";
+    public static string D23 => "d23";
+    public static string D24 => "d24";
+    public static string D25 => "d25";  
+    public static string D26 => "d26";
+    public static string D27 => "d27";
+    public static string D28 => "d28";
+    public static string D29 => "d29";
+    public static string D30 => "d30";
+    public static string D31 => "d31";
+    //
     public static string V2 => "v2";
     public static string V3 => "v3";
     public static string V4 => "v4";

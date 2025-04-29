@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/snier/Documents/LabCompi2/compi2Damian/TestEnsamblador/Proyecto1/api/api.csproj": {}
+    "/home/snier/Documents/LabCompi2/Projects/OLC2_Proyecto2_202000896/Proyecto2/api/api.csproj": {}
   },
   "projects": {
-    "/home/snier/Documents/LabCompi2/compi2Damian/TestEnsamblador/Proyecto1/api/api.csproj": {
+    "/home/snier/Documents/LabCompi2/Projects/OLC2_Proyecto2_202000896/Proyecto2/api/api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/snier/Documents/LabCompi2/compi2Damian/TestEnsamblador/Proyecto1/api/api.csproj",
+        "projectUniqueName": "/home/snier/Documents/LabCompi2/Projects/OLC2_Proyecto2_202000896/Proyecto2/api/api.csproj",
         "projectName": "api",
-        "projectPath": "/home/snier/Documents/LabCompi2/compi2Damian/TestEnsamblador/Proyecto1/api/api.csproj",
+        "projectPath": "/home/snier/Documents/LabCompi2/Projects/OLC2_Proyecto2_202000896/Proyecto2/api/api.csproj",
         "packagesPath": "/home/snier/.nuget/packages/",
-        "outputPath": "/home/snier/Documents/LabCompi2/compi2Damian/TestEnsamblador/Proyecto1/api/obj/",
+        "outputPath": "/home/snier/Documents/LabCompi2/Projects/OLC2_Proyecto2_202000896/Proyecto2/api/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/snier/.nuget/NuGet/NuGet.Config"

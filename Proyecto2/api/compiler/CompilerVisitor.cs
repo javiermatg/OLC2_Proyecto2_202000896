@@ -44,7 +44,11 @@ public class CompilerVisitor : lexicalAnalyzerBaseVisitor<Object?>
                 //g.PrintFloat(Register.X0);
             } else if (value.Type == StackObject.StackObjectType.String){
                 g.PrintString(Register.X0);
-            }
+            } else if (value.Type == StackObject.StackObjectType.Bool){
+                g.PrintInt(Register.X0);
+            } /*else if (value.Type == StackObject.StackObjectType.Null){
+                g.PrintNull(Register.X0);
+            }*/
 
         }
         //Visit(context.expr());
@@ -357,7 +361,11 @@ public class CompilerVisitor : lexicalAnalyzerBaseVisitor<Object?>
         return null;
     }
     public override Object? VisitDecimal([NotNull] lexicalAnalyzerParser.DecimalContext context){
-        
+        var value = context.DECIMAL().GetText();
+        g.Comment("Decimal Value: " + value);
+        var floatObject = g.FloatObject();
+        g.PushConstant(floatObject, float.Parse(value));
+
         return null;
     }
     public override Object? VisitString([NotNull] lexicalAnalyzerParser.StringContext context){
@@ -372,7 +380,7 @@ public class CompilerVisitor : lexicalAnalyzerBaseVisitor<Object?>
         g.Comment("Visiting ID: " + id);
         var (offset, varObject) = g.getObject(id);
         g.Mov(Register.X0, offset);
-        g.Add(Register.X0, Register.SP, Register.X0); // add the offset to sp to get the address
+        g.Add(Register.X0, Register.SP, Register.X0); // add the offset to sp to get the address        
         g.Ldr(Register.X0, Register.X0); // load de value from the address
         g.Push(Register.X0);
         var copyObject = g.CloneObject(varObject);
@@ -381,6 +389,11 @@ public class CompilerVisitor : lexicalAnalyzerBaseVisitor<Object?>
         return null;
     }
     public override Object? VisitBoolean([NotNull] lexicalAnalyzerParser.BooleanContext context){
+        var value = context.BOOL().GetText();
+        g.Comment("Visiting Boolean");
+        g.Comment("Boolean Value: " + value);
+        var boolObject = g.BoolObject();
+        g.PushConstant(boolObject, bool.Parse(value));
         return null;
     }
     public override Object? VisitNull([NotNull] lexicalAnalyzerParser.NullContext context){

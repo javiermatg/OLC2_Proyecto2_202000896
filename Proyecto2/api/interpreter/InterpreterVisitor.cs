@@ -808,6 +808,8 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
     }
     public override valueContentDTO VisitBoolean([NotNull] lexicalAnalyzerParser.BooleanContext context)
     {
+        Console.WriteLine("Here is in boolean");
+        Console.WriteLine(context.BOOL().GetText());
         return new BoolValue(bool.Parse(context.BOOL().GetText()));
 
     }    

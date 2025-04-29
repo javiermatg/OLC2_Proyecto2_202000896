@@ -1,7 +1,7 @@
  using System.Text;
 
 public class StackObject{
-    public enum StackObjectType{ Int, Float, String}
+    public enum StackObjectType{ Int, Float, String, Bool}
     public StackObjectType Type { get; set; }
     public int Length { get; set; }
     public int Depth { get; set; }
@@ -15,6 +15,9 @@ public class ArmGenerator
     private int depth = 0;
 
     /* Stack Operations*/
+    public StackObject PeekObject(){  //TopObject
+        return stackObjects.Last();
+    }
     public void PushObject(StackObject obj){
         stackObjects.Add(obj);
         
@@ -27,8 +30,21 @@ public class ArmGenerator
                 Push(Register.X0);
                 break;
             case StackObject.StackObjectType.Float:
-                // TODO:
+                long floatb = BitConverter.DoubleToInt64Bits((double)value);
+                short[] floatP = new short[4];
+                for (int i = 0; i < 4; i++){
+                    floatP[i] = (short)((floatb >> (i * 16)) & 0xFFFF);
+                }
+                instructions.Add($"MOVZ X0, #{floatP[0]}, LSL #0");
+                for (int i = 1; i < 4; i++){
+                    instructions.Add($"MOVK X0, #{floatP[i]}, LSL #{i * 16}");
+                }
+                Push(Register.X0);
                 break;
+            case StackObject.StackObjectType.Bool:
+                Mov(Register.X0, (bool)value ? 1 : 0);
+                Push(Register.X0);
+                break;    
             case StackObject.StackObjectType.String:
                 List<byte> stringArray = Utilities.StringTo1ByteArray((string)value);
                 Push(Register.HP);  
@@ -72,6 +88,14 @@ public class ArmGenerator
     public StackObject StringObject(){
         return new StackObject{
             Type = StackObject.StackObjectType.String,
+            Length = 8,
+            Depth = depth,
+            Id = null
+        };
+    }
+    public StackObject BoolObject(){
+        return new StackObject{
+            Type = StackObject.StackObjectType.Bool,
             Length = 8,
             Depth = depth,
             Id = null
