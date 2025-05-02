@@ -38,18 +38,17 @@ public interface IlexicalAnalyzerVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitInit([NotNull] lexicalAnalyzerParser.InitContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="lexicalAnalyzerParser.lstinstructions"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitLstinstructions([NotNull] lexicalAnalyzerParser.LstinstructionsContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="lexicalAnalyzerParser.instruction"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitInstruction([NotNull] lexicalAnalyzerParser.InstructionContext context);
-	/// <summary>
-	/// Visit a parse tree produced by the <c>BlockStmt</c>
-	/// labeled alternative in <see cref="lexicalAnalyzerParser.block"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	/// <return>The visitor result.</return>
-	Result VisitBlockStmt([NotNull] lexicalAnalyzerParser.BlockStmtContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>FuncStmt</c>
 	/// labeled alternative in <see cref="lexicalAnalyzerParser.funcInstructions"/>.

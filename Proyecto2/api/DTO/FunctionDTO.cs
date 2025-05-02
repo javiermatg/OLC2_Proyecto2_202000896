@@ -29,10 +29,10 @@ public class Function: Invocable{
                 newEnvironment.addVariable(context.funcParams().ID(i).GetText(), new SymbolsDTO(context.funcParams().ID(i).GetText(), "Function", arguments[i], context.Start));
             }
         }
-        /*
+
         try{
-            foreach (var instruction in context.instruction()){
-                visitor.Visit(instruction);
+            foreach (var instruction in context.lstinstructions().instruction()){
+                visitor.VisitInstruction(instruction);
 
             }
         }catch(ReturnException e){
@@ -42,7 +42,6 @@ public class Function: Invocable{
             return e.Value;
 
         }
-        */
 
         visitor.currentEnvironment = beforeEnvironment;
         visitor.stackEnvironment.Pop();

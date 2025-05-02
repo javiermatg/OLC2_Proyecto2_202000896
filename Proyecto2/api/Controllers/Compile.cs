@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using Antlr4.Runtime;
@@ -83,8 +85,8 @@ namespace api.Controllers
                 var tree = parser.init();
 
                 EnvironmentDTO initEnvironment = new EnvironmentDTO("main", null);
-                var interpreter = new InterpreterVisitor(initEnvironment);
-                interpreter.Visit(tree);
+                //var interpreter = new InterpreterVisitor(initEnvironment);
+                //interpreter.Visit(tree);
 
                 var compiler = new CompilerVisitor();
                 compiler.Visit(tree);
@@ -93,7 +95,7 @@ namespace api.Controllers
                 
                 //var result = visitor.Visit(tree);
                 //Console.WriteLine(tree.ToStringTree());
-                Console.WriteLine("------------Este es listout-------------");
+                /*Console.WriteLine("------------Este es listout-------------");
                 Console.WriteLine(interpreter.ListOut);
                 foreach (var consola in interpreter.ListOut)
                     {
@@ -126,9 +128,10 @@ namespace api.Controllers
                         }
 
                     }
-                
+                */ //finnn
 
-
+                //compiler.g.ToString()
+                //interpreter.output
                 return Ok(new {result = compiler.g.ToString(),
                            errors = errorsList,
                            symbols = Tabla});    
@@ -138,6 +141,55 @@ namespace api.Controllers
                 return BadRequest(new {result = e.Message});
             }
             
+        }
+
+        [HttpPost("ast")]
+        public async Task<IActionResult> GetAst([FromBody] CompileRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new {error = "Invalid request"});
+            }   
+            string grammarPath = Path.Combine(Directory.GetCurrentDirectory(),"lexicalAnalyzer.g4");
+            var grammar = "";
+            try{
+                 if (System.IO.File.Exists(grammarPath)){
+                    grammar = await System.IO.File.ReadAllTextAsync(grammarPath);
+                }else{
+                    return BadRequest(new {error = "File not found"});
+                }   
+            }catch(System.Exception){
+                return BadRequest(new {error = "Error reading file"});
+            }
+
+            var payload = new {
+                grammar,
+                lexgrammar = "",
+                input = request.Code,
+                start = "init",
+            };
+
+            var jsonPaylod = JsonSerializer.Serialize(payload);
+            var context = new StringContent(jsonPaylod, Encoding.UTF8, "application/json");
+            using (var client = new HttpClient()){
+                try{
+                    HttpResponseMessage response = await client.PostAsync("http://lab.antlr.org/parse/", context);
+                    response.EnsureSuccessStatusCode();
+                    string result = await response.Content.ReadAsStringAsync();
+                    using var doc = JsonDocument.Parse(result);
+                    var root = doc.RootElement;
+
+                    if(root.TryGetProperty("result", out JsonElement resultElement)&&
+                        resultElement.TryGetProperty("svgtree", out JsonElement svgtreeElement))
+                    {
+                        string svgtree = svgtreeElement.GetString() ?? string.Empty;
+                        return Content(svgtree, "image/svg+xml");    
+                    }
+                    return BadRequest(new {error = "svgtree not found in response"});
+                }catch(System.Exception){
+                    return BadRequest(new {error = "Error parsing file"});
+                }
+            }
         }
 
         //Endpoint to Show the errors

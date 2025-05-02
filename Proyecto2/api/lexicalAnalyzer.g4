@@ -15,9 +15,9 @@ STRING: ('"'|'\'') (~["\r\n] | '""')* ('"'|'\'') ;
 
 
 
-init: instruction* ;
+init: lstinstructions ;
 
-
+lstinstructions: instruction (instruction)* ;
 
 instruction: expression (';')?
 | stmtVariables (';')?
@@ -37,12 +37,14 @@ instruction: expression (';')?
 | breakInstruction (';')?
 | continueInstruction (';')?
 | returnFunc (';')?
-| block (';')?
+
 
 ;
 
-block: '{' instruction* '}'  #BlockStmt;
-funcInstructions: 'func' ID '(' funcParams? ')' ':' returnT=type? '{' instruction '}' #FuncStmt;
+//funcDcl: 'function' ID '('PARAMS?')': ID '{'dcl*'}'
+//params: param (',' param)*;
+//param: ID ':' ID;
+funcInstructions: 'func' ID '(' funcParams? ')' ':' returnT=type? '{' lstinstructions '}' #FuncStmt;
 funcParams: ID type (',' ID type)* ;
 //funExecute: expr func  #FunctionCall;
 
@@ -50,17 +52,17 @@ func: '(' pars? ')' ;
 pars: expr (',' expr)* ;
 
 stmtSlice: 'var' ID '[]' type ('=' '{' (expr|',')* '}')? #StmtSlices ;
-stmtVariables: 'var' ID type ('=' expr)?  #StmtVar ;
+stmtVariables: 'var' ID type ('=' expr)? #StmtVar ;
 stmtAssign: ID ':=' expr #StmtVarAssign;
 //assign: ID ('='|':='|'++'|'--'|'+='| '-=') expr? #AssingVar;
-print: 'fmt.Println' '('expr (',' expr)*')'  #PrintVar;
-instructionIf: 'if' exprIf=expr '{' lsIf=instruction '}' (('else if' exprElseIf=expr'{' lsElseIf=instruction'}'))* ('else' '{' lsElse=instruction '}')? #IfStmt;
+print: 'fmt.Println' '('(expr|',')+')'  #PrintVar;
+instructionIf: 'if' exprIf=expr '{' lsIf=lstinstructions '}' (('else if' exprElseIf=expr'{' lsElseIf=lstinstructions'}'))* ('else' '{' lsElse=lstinstructions '}')? #IfStmt;
 
-forInstruction: 'for' ('(' forDeclare ';')? expr (';' forDeclare ')')? '{' lsfor=instruction '}' #ForStmt;
+forInstruction: 'for' ('(' stmtAssign ';')? expr (';' forDeclare ')')? '{' lsfor=lstinstructions '}' #ForStmt;
 forDeclare: /*assign |*/  expr;
 
-switchInstruction: 'switch' expr '{' cases ('default' ':' lsDefautl=instruction)? '}' #SwitchStmt;
-cases: ('case' expr ':' instruction)+;
+switchInstruction: 'switch' expr '{' cases ('default' ':' lsDefautl=lstinstructions)? '}' #SwitchStmt;
+cases: ('case' expr ':' lstinstructions)+;
 
 breakInstruction: 'break' #breakTransfer;  
 continueInstruction: 'continue' #continueTransfer;
@@ -68,7 +70,7 @@ returnFunc:'return' expr?  #ReturnStmt;
 
 expression: expr #StmtExpr;
 
-//funcInstructions: 'func' ID '(' funcParams? ')' ':' returnT=type '{' instruction '}' #FuncStmt;
+//funcInstructions: 'func' ID '(' funcParams? ')' ':' returnT=type '{' lstinstructions '}' #FuncStmt;
 //funcExecute: ID '(' arguments? ')' ;
 //funcParams: ID type (',' ID type)* ; 
 //arguments: expr (',' expr)* ;

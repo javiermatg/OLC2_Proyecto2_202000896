@@ -48,6 +48,18 @@ public partial class lexicalAnalyzerBaseListener : IlexicalAnalyzerListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitInit([NotNull] lexicalAnalyzerParser.InitContext context) { }
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="lexicalAnalyzerParser.lstinstructions"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterLstinstructions([NotNull] lexicalAnalyzerParser.LstinstructionsContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="lexicalAnalyzerParser.lstinstructions"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitLstinstructions([NotNull] lexicalAnalyzerParser.LstinstructionsContext context) { }
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="lexicalAnalyzerParser.instruction"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
@@ -59,20 +71,6 @@ public partial class lexicalAnalyzerBaseListener : IlexicalAnalyzerListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitInstruction([NotNull] lexicalAnalyzerParser.InstructionContext context) { }
-	/// <summary>
-	/// Enter a parse tree produced by the <c>BlockStmt</c>
-	/// labeled alternative in <see cref="lexicalAnalyzerParser.block"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void EnterBlockStmt([NotNull] lexicalAnalyzerParser.BlockStmtContext context) { }
-	/// <summary>
-	/// Exit a parse tree produced by the <c>BlockStmt</c>
-	/// labeled alternative in <see cref="lexicalAnalyzerParser.block"/>.
-	/// <para>The default implementation does nothing.</para>
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	public virtual void ExitBlockStmt([NotNull] lexicalAnalyzerParser.BlockStmtContext context) { }
 	/// <summary>
 	/// Enter a parse tree produced by the <c>FuncStmt</c>
 	/// labeled alternative in <see cref="lexicalAnalyzerParser.funcInstructions"/>.

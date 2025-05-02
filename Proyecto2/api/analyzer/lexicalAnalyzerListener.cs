@@ -41,6 +41,16 @@ public interface IlexicalAnalyzerListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitInit([NotNull] lexicalAnalyzerParser.InitContext context);
 	/// <summary>
+	/// Enter a parse tree produced by <see cref="lexicalAnalyzerParser.lstinstructions"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterLstinstructions([NotNull] lexicalAnalyzerParser.LstinstructionsContext context);
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="lexicalAnalyzerParser.lstinstructions"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitLstinstructions([NotNull] lexicalAnalyzerParser.LstinstructionsContext context);
+	/// <summary>
 	/// Enter a parse tree produced by <see cref="lexicalAnalyzerParser.instruction"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
@@ -50,18 +60,6 @@ public interface IlexicalAnalyzerListener : IParseTreeListener {
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	void ExitInstruction([NotNull] lexicalAnalyzerParser.InstructionContext context);
-	/// <summary>
-	/// Enter a parse tree produced by the <c>BlockStmt</c>
-	/// labeled alternative in <see cref="lexicalAnalyzerParser.block"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void EnterBlockStmt([NotNull] lexicalAnalyzerParser.BlockStmtContext context);
-	/// <summary>
-	/// Exit a parse tree produced by the <c>BlockStmt</c>
-	/// labeled alternative in <see cref="lexicalAnalyzerParser.block"/>.
-	/// </summary>
-	/// <param name="context">The parse tree.</param>
-	void ExitBlockStmt([NotNull] lexicalAnalyzerParser.BlockStmtContext context);
 	/// <summary>
 	/// Enter a parse tree produced by the <c>FuncStmt</c>
 	/// labeled alternative in <see cref="lexicalAnalyzerParser.funcInstructions"/>.

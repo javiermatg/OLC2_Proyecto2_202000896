@@ -33,15 +33,59 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
     }
     public override valueContentDTO VisitInit([NotNull] lexicalAnalyzerParser.InitContext context)
     {
-        foreach (var instruction in context.instruction()){
-            Visit(instruction);
-        }
+        if(context.lstinstructions() != null)
+            return VisitLstinstructions(context.lstinstructions());
+        
         return defaultVoid;
     }
 
-   
+    public override valueContentDTO VisitLstinstructions([NotNull] lexicalAnalyzerParser.LstinstructionsContext context)
+    {
+        if (context.instruction() == null)
+            return defaultVoid;
+        
+        foreach (lexicalAnalyzerParser.InstructionContext instruction in context.instruction())
+        {
+            VisitInstruction(instruction);
+        }
+        return defaultVoid;    
+    }
 
-    
+    public override valueContentDTO VisitInstruction([NotNull] lexicalAnalyzerParser.InstructionContext context)
+    {
+        if (context == null)
+            return defaultVoid;
+
+        if (context.print() !=null)
+            Visit(context.print());
+        else if (context.stmtVariables() != null)
+            Visit(context.stmtVariables());
+        //else if(context.assign() != null)
+         //   Visit(context.assign());
+        else if (context.instructionIf() != null)
+            Visit(context.instructionIf());
+        else if (context.funcInstructions() != null)
+            Visit(context.funcInstructions());
+        //else if (context.funExecute() != null)
+        //    Visit(context.funExecute());
+        else if(context.returnFunc() != null)
+            Visit(context.returnFunc());   
+        else if(context.forInstruction() != null)      
+            Visit(context.forInstruction());
+        else if(context.breakInstruction() != null)    
+            Visit(context.breakInstruction());
+        else if(context.continueInstruction() != null)
+            Visit(context.continueInstruction());
+        else if(context.switchInstruction() != null)
+            Visit(context.switchInstruction());    
+        else if(context.expression() != null)    
+            Visit(context.expression());
+        else if(context.stmtAssign() != null)    
+            Visit(context.stmtAssign());    
+        
+        return defaultVoid;
+    }
+
     public override valueContentDTO VisitPrintVar([NotNull] lexicalAnalyzerParser.PrintVarContext context)
     {   /*
         if (context.expr() != null){
@@ -52,7 +96,8 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
             Console.WriteLine(ListOut);
         }*/
         
-        Console.WriteLine("Here is in Print");
+        
+        //int contador = 1;
         if (context.expr() == null)
             return defaultVoid;
 
@@ -147,15 +192,14 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
             _ => throw new Exception("Invalid type")
         };*/
     }
-    // Modification StmtVarAssign
+
     public override valueContentDTO VisitStmtVarAssign([NotNull] lexicalAnalyzerParser.StmtVarAssignContext context)
     {   
         EnvironmentDTO currentEnv = stackEnvironment.Peek();
         string id = context.ID().GetText();
         valueContentDTO value = Visit(context.expr());
         var type = getValueType(value);
-        currentEnv.addVariable(id, new SymbolsDTO(id, type, value, context.Start));
-        return defaultVoid;
+        return currentEnv.addVariable(id, new SymbolsDTO(id, type, value, context.Start));
             
         
     }
@@ -203,8 +247,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
 
         
         //return defaultVoid;
-    }
-    public string getValueType(valueContentDTO value)
+    }    public string getValueType(valueContentDTO value)
     {
         return value switch
         {
@@ -232,7 +275,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
             stackEnvironment.Peek().son = currentEnv;
             stackEnvironment.Push(currentEnv);
             stackEnvironmentAux.Push(currentEnv);
-            Visit(context.lsIf);
+            VisitLstinstructions(context.lsIf);
             stackEnvironment.Pop();
             stackEnvironment.Peek().son = null;
         }else {
@@ -244,7 +287,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
                     stackEnvironment.Peek().son = currentEnv;
                     stackEnvironment.Push(currentEnv);
                     stackEnvironmentAux.Push(currentEnv);
-                    Visit(context.lsElseIf);
+                    VisitLstinstructions(context.lsElseIf);
                     stackEnvironment.Pop();
                     stackEnvironment.Peek().son = null;
                 }else {
@@ -253,7 +296,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
                         stackEnvironment.Peek().son = currentEnv;
                         stackEnvironment.Push(currentEnv);
                         stackEnvironmentAux.Push(currentEnv);
-                        Visit(context.lsElse);
+                        VisitLstinstructions(context.lsElse);
                         stackEnvironment.Pop();
                         stackEnvironment.Peek().son = null;
                     }
@@ -264,7 +307,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
                         stackEnvironment.Peek().son = currentEnv;
                         stackEnvironment.Push(currentEnv);
                         stackEnvironmentAux.Push(currentEnv);
-                        Visit(context.lsElse);
+                        VisitLstinstructions(context.lsElse);
                         stackEnvironment.Pop();
                         stackEnvironment.Peek().son = null;
                     }
@@ -318,7 +361,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
          if (symbol != null && symbol.function  is FunctionDTO function){
              EnvironmentDTO envFunc = new EnvironmentDTO("Function", currentEnv);
              stackEnvironment.Push(envFunc);
-             //Visit(function.instructions);
+             //VisitLstinstructions(function.instructions);
 
              var retu = Visit(function.instructions);
              Console.WriteLine("Here is in INstructions function");
@@ -359,6 +402,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
         foreach(var f in context.func()){
             if (valueF is FunctionValue functionValue){
             Console.WriteLine("Here is in FunctionCall If");
+            //valueF = VisitFunc(functionValue.invocable, f.pars());
             valueF = VisitFunc(functionValue.invocable, f.pars());
             }else{
 
@@ -431,15 +475,14 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
     public override valueContentDTO VisitForStmt([NotNull] lexicalAnalyzerParser.ForStmtContext context)
     {
         
-        if (context.forDeclare(0) != null){
-            Console.WriteLine("Here is in For Clasic");
+        if (context.stmtAssign() != null){
             EnvironmentDTO previusEnv = currentEnvironment;
             //currentEnvironment= new EnvironmentDTO("For", currentEnvironment); 
             currentEnvironment= new EnvironmentDTO("For", stackEnvironment.Peek()); 
             stackEnvironment.Peek().son = currentEnvironment;
             stackEnvironment.Push(currentEnvironment);
             stackEnvironmentAux.Push(currentEnvironment);
-            Visit(context.forDeclare(0));
+            Visit(context.stmtAssign());
             VisitBody(context);
 
             //currentEnv = beforeEnv;
@@ -480,8 +523,8 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
             
             try{
                 while((conditionFor as BoolValue).Value){
-                    //Visit(context.lsfor);          
-                    Visit(context.instruction());
+                    VisitLstinstructions(context.lsfor);          
+
                     conditionFor = Visit(context.expr());
                 }
             }
@@ -516,9 +559,9 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
             {
 
                 Console.WriteLine("Entry in While");
-                Visit(context.lsfor);
+                VisitLstinstructions(context.lsfor);
                 
-                Visit(context.forDeclare(1));
+                Visit(context.forDeclare());
                 condition = Visit(context.expr());
             }
         }
@@ -531,7 +574,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
         catch (ContinueException)
         {
             currentEnvironment = sonEnvironment;
-            Visit(context.forDeclare(1));
+            Visit(context.forDeclare());
             VisitBody(context);
             
             
@@ -553,7 +596,7 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
         valueContentDTO value = Visit(context.expr());
         var cases = context.cases();
         var expressions = cases.expr();
-        var instructions = cases.instruction();
+        var instructions = cases.lstinstructions();
 
         try{
             for (int i = 0; i < expressions.Length; i++)
@@ -656,6 +699,10 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
         {
             (IntValue l, IntValue r, "*") => new IntValue(l.Value * r.Value),
             (IntValue l, IntValue r, "/") => new IntValue(l.Value / r.Value),
+            (IntValue l, FloatValue r, "*") => new FloatValue(l.Value * r.Value),
+            (IntValue l, FloatValue r, "/") => new FloatValue(l.Value / r.Value),
+            (FloatValue l, IntValue r, "*") => new FloatValue(l.Value * r.Value),
+            (FloatValue l, IntValue r, "/") => new FloatValue(l.Value / r.Value),
             (FloatValue l, FloatValue r, "*") => new FloatValue(l.Value * r.Value),
             (FloatValue l, FloatValue r, "/") => new FloatValue(l.Value / r.Value),
             _ => throw new SemanticError("Invalid operation multDiv", context.Start)
@@ -674,7 +721,6 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
 
     public override valueContentDTO VisitLogicOperator([NotNull] lexicalAnalyzerParser.LogicOperatorContext context)
     {
-        //var (boolVall, opl) = ((BoolValue, string))Visit(context.left)!;
         valueContentDTO left = Visit(context.left);
         valueContentDTO right = Visit(context.right);
         var op = context.GetChild(1).GetText();
@@ -785,17 +831,14 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
 
     public override valueContentDTO VisitString([NotNull] lexicalAnalyzerParser.StringContext context)
     {   
-        Console.WriteLine("Here is in string");
         //Console.WriteLine("Here is in string");
         //Console.WriteLine(context.STRING().GetText());
         //Console.WriteLine(context.GetText());
-        Console.WriteLine(context.STRING().GetText().Trim('"'));
         return new StringValue(context.STRING().GetText().Trim('"'));
     }
 
     public override valueContentDTO VisitIdentifier([NotNull] lexicalAnalyzerParser.IdentifierContext context)
     {
-        Console.WriteLine("Here is in identifier");
         EnvironmentDTO currentEnv = stackEnvironment.Peek();
         //string id = context.ID().GetText();
         SymbolsDTO? symbol = currentEnv.seekVariable(context.ID().GetText());
@@ -810,8 +853,6 @@ public class InterpreterVisitor : lexicalAnalyzerBaseVisitor<valueContentDTO>
     }
     public override valueContentDTO VisitBoolean([NotNull] lexicalAnalyzerParser.BooleanContext context)
     {
-        Console.WriteLine("Here is in boolean");
-        Console.WriteLine(context.BOOL().GetText());
         return new BoolValue(bool.Parse(context.BOOL().GetText()));
 
     }    
